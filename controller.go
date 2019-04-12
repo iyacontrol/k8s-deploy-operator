@@ -6,23 +6,23 @@ import (
 	"time"
 
 	"github.com/iyacontrol/go-common/glog"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
+	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	appslisters "k8s.io/client-go/listers/apps/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
-	appslisters "k8s.io/client-go/listers/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
-
 	"k8s.io/k8s-deploy-operator/pkg/apis/k8sdeployoperator/v1"
 	clientset "k8s.io/k8s-deploy-operator/pkg/client/clientset/versioned"
+	sscheme "k8s.io/k8s-deploy-operator/pkg/client/clientset/versioned/scheme"
 	informers "k8s.io/k8s-deploy-operator/pkg/client/informers/externalversions"
 	listers "k8s.io/k8s-deploy-operator/pkg/client/listers/k8sdeployoperator/v1"
-	sscheme "k8s.io/k8s-deploy-operator/pkg/client/clientset/versioned/scheme"
 )
 
 const controllerAgentName = "k8s_deploy_controller"
@@ -117,7 +117,7 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	defer c.queue.ShutDown()
 
 	// Start the informer factories to begin populating the informer caches
-	glog.Info("Starting Canary Deploy controller")
+	glog.Info("Starting K8s Deploy controller")
 
 	// Wait for the caches to be synced before starting workers
 	glog.Info("Waiting for informer caches to sync")
@@ -202,5 +202,53 @@ func (c *Controller) processNextWorkItem() bool {
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two
 func (c *Controller) syncHandler(key string) error {
+	// Convert the namespace/name string into a distinct namespace and name
+	namespace, name, err := cache.SplitMetaNamespaceKey(key)
+	if err != nil {
+		runtime.HandleError(fmt.Errorf("invalid resource key: %s", key))
+		return nil
+	}
+	glog.Infof("\nReceived: namespace: %v, name: %v\n", namespace, name)
+
+	cd, err := c.cdLister.Canaries(namespace).Get(name)
+	if err != nil {
+		return fmt.Errorf("error getting resource: %v", err)
+	}
+	glog.Infof("k8sdeploy: %v", cd)
+
+	switch cd.Spec.Operation {
+	case 1:
+
+	case 2:
+
+	case 3:
+
+
+	default:
+		return fmt.Errorf("cannot handle operation %v", cd.Spec.Operation)
+	}
+
+
+	old, err := c.deploymentsLister.Deployments(namespace).Get(name)
+	if err != nil {
+		return  err
+	}
+
+	new := &appsv1.Deployment{
+		TypeMeta: old.TypeMeta,
+		ObjectMeta: old.ObjectMeta,
+		Spec: old.Spec,
+	}
+
+
+	new.SetName(name + "-canary")
+	new.Spec.Template.Spec.Containers[0].Image = cd.Spec.Image
+
+	_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(new)
+	if err != nil {
+		return err
+	}
+
+
 	return nil
 }

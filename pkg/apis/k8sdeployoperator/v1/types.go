@@ -31,13 +31,13 @@ type Canary struct {
 
 // CanarySpec is the spec for a Canary resource
 type CanarySpec struct {
-	DeployNamespace string `json:"deploy_namespace"`
-	DeployName      string `json:"deploy_name"`
+	Operation       uint8  `json:"operation"`
 	Image           string `json:"image"`
 }
 
 // CanaryStatus is the status for a Canary resource
 type CanaryStatus struct {
+	DeployStatus int32 `json:"deployStatus"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
