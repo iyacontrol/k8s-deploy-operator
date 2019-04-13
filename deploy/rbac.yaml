@@ -29,7 +29,7 @@ rules:
   - deployments
   verbs:
   - "*"
-- apiGroups: ["k8sdeploycontroller.k8s.io"]
+- apiGroups: ["k8sdeployoperator.k8s.io"]
   resources: ["canaries"]
   verbs:
   - "*"

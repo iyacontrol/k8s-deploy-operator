@@ -19,6 +19,7 @@ spec:
       #   prometheus.io/path: '/stats/prometheus'
       #   prometheus.io/port: '9000'
     spec:
+      serviceAccountName: deploy-operator
       containers:
       - name: k8s-deploy-operator
         image: 'iyacontrol/deploy-operator:v0.0.1'
