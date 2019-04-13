@@ -255,11 +255,15 @@ func (c *Controller) syncHandler(key string) error {
 			return err
 		}
 
+		glog.Infof("delete canary deployment name: %s", canaryDeployName)
+
 	case K8sDeployStageRollup:
 		err := c.kubeclientset.AppsV1().Deployments(namespace).Delete(canaryDeployName, deleteOptions)
 		if err != nil && !errors.IsNotFound(err) {
 			return err
 		}
+
+		glog.Infof("delete canary deployment name: %s", canaryDeployName)
 
 		deploy, err := c.deploymentsLister.Deployments(namespace).Get(name)
 		if err != nil {
@@ -272,6 +276,8 @@ func (c *Controller) syncHandler(key string) error {
 		if err != nil {
 			return err
 		}
+
+		glog.Infof("update container image : %s of  deployment name: %s", cd.Spec.Image, name)
 
 	default:
 		glog.Errorf("cannot handle operation %v", cd.Spec.Stage)
