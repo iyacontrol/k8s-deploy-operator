@@ -6,8 +6,9 @@ import (
 	"time"
 
 	"github.com/iyacontrol/go-common/glog"
-	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	kubeinformers "k8s.io/client-go/informers"
@@ -18,6 +19,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
+
 	"k8s.io/k8s-deploy-operator/pkg/apis/k8sdeployoperator/v1"
 	clientset "k8s.io/k8s-deploy-operator/pkg/client/clientset/versioned"
 	sscheme "k8s.io/k8s-deploy-operator/pkg/client/clientset/versioned/scheme"
@@ -26,6 +28,11 @@ import (
 )
 
 const controllerAgentName = "k8s_deploy_controller"
+
+var policy = metav1.DeletePropagationBackground
+var deleteOptions = &metav1.DeleteOptions{
+	PropagationPolicy: &policy,
+}
 
 // Controller is the controller implementation for Canary resources
 type Controller struct {
@@ -216,39 +223,52 @@ func (c *Controller) syncHandler(key string) error {
 	}
 	glog.Infof("k8sdeploy: %v", cd)
 
-	switch cd.Spec.Operation {
-	case 1:
+	switch cd.Spec.Stage {
+	case K8sDeployStageCanary:
 
-	case 2:
+	case K8sDeployStageRollBack:
+		err := c.kubeclientset.AppsV1().Deployments(namespace).Delete(name+"-canary", deleteOptions)
+		if err != nil && !errors.IsNotFound(err) {
+			return err
+		}
 
-	case 3:
+	case K8sDeployStageRollup:
+		deploy, err := c.deploymentsLister.Deployments(namespace).Get(name)
+		if err != nil {
+			return err
+		}
 
+		deploy.Spec.Template.Spec.Containers[0].Image = cd.Spec.Image
+
+		_, err = c.kubeclientset.AppsV1().Deployments(namespace).Update(deploy)
+		if err != nil {
+			return err
+		}
 
 	default:
-		return fmt.Errorf("cannot handle operation %v", cd.Spec.Operation)
+		glog.Errorf("cannot handle operation %v", cd.Spec.Stage)
+		return nil
 	}
 
-
-	old, err := c.deploymentsLister.Deployments(namespace).Get(name)
-	if err != nil {
-		return  err
-	}
-
-	new := &appsv1.Deployment{
-		TypeMeta: old.TypeMeta,
-		ObjectMeta: old.ObjectMeta,
-		Spec: old.Spec,
-	}
-
-
-	new.SetName(name + "-canary")
-	new.Spec.Template.Spec.Containers[0].Image = cd.Spec.Image
-
-	_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(new)
-	if err != nil {
-		return err
-	}
-
+	//old, err := c.deploymentsLister.Deployments(namespace).Get(name)
+	//if err != nil {
+	//	return  err
+	//}
+	//
+	//new := &appsv1.Deployment{
+	//	TypeMeta: old.TypeMeta,
+	//	ObjectMeta: old.ObjectMeta,
+	//	Spec: old.Spec,
+	//}
+	//
+	//
+	//new.SetName(name + "-canary")
+	//new.Spec.Template.Spec.Containers[0].Image = cd.Spec.Image
+	//
+	//_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(new)
+	//if err != nil {
+	//	return err
+	//}
 
 	return nil
 }

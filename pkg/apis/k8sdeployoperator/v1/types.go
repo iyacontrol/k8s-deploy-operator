@@ -31,7 +31,7 @@ type Canary struct {
 
 // CanarySpec is the spec for a Canary resource
 type CanarySpec struct {
-	Operation       uint8  `json:"operation"`
+	Stage       uint8  `json:"stage"`
 	Image           string `json:"image"`
 }
 
