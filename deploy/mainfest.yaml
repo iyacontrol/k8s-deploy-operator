@@ -1,0 +1,101 @@
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: canaries.k8sdeploycontroller.k8s.io
+spec:
+  group: k8sdeploycontroller.k8s.io
+  version: v1
+  names:
+    kind: Canary
+    plural: canaries
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            weight:
+              type: integer
+              minimum: 1
+              maximum: 3
+    
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deploy-operator
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: deploy-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: deploy-operator
+subjects:
+- kind: ServiceAccount
+  name: deploy-operator
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: deploy-operator
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - "*"
+- apiGroups: ["k8sdeploycontroller.k8s.io"]
+  resources: ["canaries"]
+  verbs:
+  - "*"
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: deploy-operator
+  namespace: kube-system
+  labels:
+    app: deploy-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-operator
+  template:
+    metadata:
+      labels:
+        app: deploy-operator
+      # annotations:
+      #   prometheus.io/scrape: 'true'
+      #   prometheus.io/path: '/stats/prometheus'
+      #   prometheus.io/port: '9000'
+    spec:
+      containers:
+      - name: k8s-deploy-operator
+        image: 'iyacontrol/deploy-operator:v0.0.1'
+        env:
+        - name: 'CPUS'
+          value: '1'
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: '1'
+            memory: 1Gi
+        imagePullPolicy: Always
+
