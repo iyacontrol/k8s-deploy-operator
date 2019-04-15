@@ -15,3 +15,5 @@
 .vscode
 
 k8s-deploy-operator
+
+.DS_Store
