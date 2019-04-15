@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: deploy-operator
-  namespace: kube-system
+  namespace: kube-admin
   labels:
     app: deploy-operator
 spec:
