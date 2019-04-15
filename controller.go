@@ -105,11 +105,14 @@ func NewController(
 				return
 			}
 
+			if ok := (oldCrd.Spec.Stage == 1 && newCrd.Spec.Stage >= 2) || (oldCrd.Spec.Stage == 3 && newCrd.Spec.Stage == 1); !ok {
+				return
+			}
+
 			key, err := cache.MetaNamespaceKeyFunc(new)
 			if err == nil {
 				c.queue.Add(key)
 			}
-
 		},
 		DeleteFunc: func(obj interface{}) {
 		},
