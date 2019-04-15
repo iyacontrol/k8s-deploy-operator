@@ -105,7 +105,7 @@ func NewController(
 				return
 			}
 
-			if ok := (oldCrd.Spec.Stage == 1 && newCrd.Spec.Stage >= 2) || (oldCrd.Spec.Stage == 3 && newCrd.Spec.Stage == 1); !ok {
+			if ok := (oldCrd.Spec.Stage == 1 && newCrd.Spec.Stage >= 2) || (oldCrd.Spec.Stage >= 2 && newCrd.Spec.Stage == 1); !ok {
 				return
 			}
 
