@@ -35,6 +35,8 @@ var deleteOptions = &metav1.DeleteOptions{
 	PropagationPolicy: &policy,
 }
 
+var replicas int32 = 1
+
 // Controller is the controller implementation for Canary resources
 type Controller struct {
 	kubeclientset kubernetes.Interface
@@ -245,6 +247,7 @@ func (c *Controller) syncHandler(key string) error {
 		}
 
 		canary.Spec.Template.Spec.Containers[cd.Spec.Index].Image = cd.Spec.Image
+		canary.Spec.Replicas = &replicas
 
 		_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(canary)
 		if err != nil {
