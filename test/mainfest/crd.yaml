@@ -1,0 +1,10 @@
+apiVersion: k8sdeployoperator.k8s.io/v1
+kind: Canary
+metadata:
+  name: hello
+  namespace: default
+spec:
+  image: iyacontrol/hello:canary
+  index: 0
+  stage: 3
+  

@@ -234,12 +234,16 @@ func (c *Controller) syncHandler(key string) error {
 		}
 
 		canary := &appsv1.Deployment{
-			TypeMeta:   deploy.TypeMeta,
-			ObjectMeta: deploy.ObjectMeta,
-			Spec:       deploy.Spec,
+			TypeMeta: deploy.TypeMeta,
+			ObjectMeta: metav1.ObjectMeta{
+				Name:        canaryDeployName,
+				Namespace:   namespace,
+				Labels:      deploy.Labels,
+				Annotations: deploy.Annotations,
+			},
+			Spec: deploy.Spec,
 		}
 
-		canary.SetName(canaryDeployName)
 		canary.Spec.Template.Spec.Containers[cd.Spec.Index].Image = cd.Spec.Image
 
 		_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(canary)
