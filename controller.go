@@ -30,7 +30,7 @@ import (
 
 const controllerAgentName = "k8s_deploy_controller"
 
-var policy = metav1.DeletePropagationBackground
+var policy = metav1.DeletePropagationOrphan
 var deleteOptions = &metav1.DeleteOptions{
 	PropagationPolicy: &policy,
 }
