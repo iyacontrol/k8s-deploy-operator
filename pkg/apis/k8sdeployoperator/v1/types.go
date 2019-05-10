@@ -31,9 +31,8 @@ type Canary struct {
 
 // CanarySpec is the spec for a Canary resource
 type CanarySpec struct {
-	Stage uint8  `json:"stage"`
-	Image string `json:"image"`
-	Index int    `json:"index"`
+	Stage  uint8    `json:"stage"`
+	Images []string `json:"images"`
 }
 
 // CanaryStatus is the status for a Canary resource

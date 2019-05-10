@@ -249,7 +249,10 @@ func (c *Controller) syncHandler(key string) error {
 			Spec: deploy.Spec,
 		}
 
-		canary.Spec.Template.Spec.Containers[cd.Spec.Index].Image = cd.Spec.Image
+		for index, image := range cd.Spec.Images {
+			canary.Spec.Template.Spec.Containers[index].Image = image
+		}
+		
 		canary.Spec.Replicas = &replicas
 
 		_, err = c.kubeclientset.AppsV1().Deployments(namespace).Create(canary)
@@ -280,14 +283,17 @@ func (c *Controller) syncHandler(key string) error {
 			return err
 		}
 
-		deploy.Spec.Template.Spec.Containers[cd.Spec.Index].Image = cd.Spec.Image
+		for index, image := range cd.Spec.Images {
+			deploy.Spec.Template.Spec.Containers[index].Image = image
+		}
+
 
 		_, err = c.kubeclientset.AppsV1().Deployments(namespace).Update(deploy)
 		if err != nil {
 			return err
 		}
 
-		glog.Infof("update container image : %s of  deployment name: %s", cd.Spec.Image, name)
+		glog.Infof("update container images : %v of  deployment name: %s", cd.Spec.Images, name)
 
 	default:
 		glog.Errorf("cannot handle operation %v", cd.Spec.Stage)
