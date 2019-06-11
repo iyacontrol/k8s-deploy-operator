@@ -249,6 +249,8 @@ func (c *Controller) syncHandler(key string) error {
 			Spec: deploy.Spec,
 		}
 
+		canary.SetLabels(map[string]string{"canary": "true"})
+
 		for index, image := range cd.Spec.Images {
 			canary.Spec.Template.Spec.Containers[index].Image = image
 		}

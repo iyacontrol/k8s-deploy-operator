@@ -79,15 +79,11 @@ spec:
     metadata:
       labels:
         app: deploy-operator
-      # annotations:
-      #   prometheus.io/scrape: 'true'
-      #   prometheus.io/path: '/stats/prometheus'
-      #   prometheus.io/port: '9000'
     spec:
       serviceAccountName: deploy-operator
       containers:
       - name: k8s-deploy-operator
-        image: 'iyacontrol/deploy-operator:v0.0.1'
+        image: 'iyacontrol/deploy-operator:v0.0.2'
         env:
         - name: 'CPUS'
           value: '1'
@@ -98,5 +94,5 @@ spec:
           requests:
             cpu: '1'
             memory: 1Gi
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
 

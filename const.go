@@ -2,7 +2,8 @@ package main
 
 
 const (
-	K8sDeployStageCanary = iota+1
+	K8sDeployStageInitialization = iota
+	K8sDeployStageCanary
 	K8sDeployStageRollBack
 	K8sDeployStageRollup
 )
