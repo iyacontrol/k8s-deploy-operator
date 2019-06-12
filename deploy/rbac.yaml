@@ -29,6 +29,18 @@ rules:
   - deployments
   verbs:
   - "*"
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - "*"
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
 - apiGroups: ["k8sdeployoperator.k8s.io"]
   resources: ["canaries"]
   verbs:
