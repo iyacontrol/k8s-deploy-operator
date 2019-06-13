@@ -120,6 +120,16 @@
 			"Rev": "9316a62528ac99aaecb4e47eadd6dc8aa6533d58"
 		},
 		{
+			"ImportPath": "github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator",
+			"Comment": "v0.1-1-gac20d3c",
+			"Rev": "ac20d3c8a0e536867559bfced16b20eeaa31ba79"
+		},
+		{
+			"ImportPath": "github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator/v1",
+			"Comment": "v0.1-1-gac20d3c",
+			"Rev": "ac20d3c8a0e536867559bfced16b20eeaa31ba79"
+		},
+		{
 			"ImportPath": "github.com/json-iterator/go",
 			"Comment": "1.1.4",
 			"Rev": "ab8a2e0c74be9d3be70b3184d9acc634935ded82"
@@ -730,11 +740,6 @@
 			"Rev": "6ee68ca5fd8355d024d02f9db0b3b667e8357a0f"
 		},
 		{
-			"ImportPath": "k8s.io/client-go/discovery/fake",
-			"Comment": "v11.0.0",
-			"Rev": "6ee68ca5fd8355d024d02f9db0b3b667e8357a0f"
-		},
-		{
 			"ImportPath": "k8s.io/client-go/dynamic",
 			"Comment": "v11.0.0",
 			"Rev": "6ee68ca5fd8355d024d02f9db0b3b667e8357a0f"
@@ -966,11 +971,6 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go/restmapper",
-			"Comment": "v11.0.0",
-			"Rev": "6ee68ca5fd8355d024d02f9db0b3b667e8357a0f"
-		},
-		{
-			"ImportPath": "k8s.io/client-go/testing",
 			"Comment": "v11.0.0",
 			"Rev": "6ee68ca5fd8355d024d02f9db0b3b667e8357a0f"
 		},

@@ -19,9 +19,9 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator/v1"
 
 	"k8s.io/k8s-deploy-operator/version"
-	"k8s.io/k8s-deploy-operator/pkg/apis/k8sdeployoperator/v1"
 )
 
 const (
