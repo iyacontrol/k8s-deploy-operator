@@ -2,9 +2,6 @@
 	"ImportPath": "k8s.io/k8s-deploy-operator",
 	"GoVersion": "go1.12",
 	"GodepVersion": "v79",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/appscode/jsonpatch",
@@ -121,13 +118,13 @@
 		},
 		{
 			"ImportPath": "github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator",
-			"Comment": "v0.1-1-gac20d3c",
-			"Rev": "ac20d3c8a0e536867559bfced16b20eeaa31ba79"
+			"Comment": "v0.1-2-g12ff9ab",
+			"Rev": "12ff9ab3c20b008ad99b4655fd81f6c55120dd09"
 		},
 		{
 			"ImportPath": "github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator/v1",
-			"Comment": "v0.1-1-gac20d3c",
-			"Rev": "ac20d3c8a0e536867559bfced16b20eeaa31ba79"
+			"Comment": "v0.1-2-g12ff9ab",
+			"Rev": "12ff9ab3c20b008ad99b4655fd81f6c55120dd09"
 		},
 		{
 			"ImportPath": "github.com/json-iterator/go",
