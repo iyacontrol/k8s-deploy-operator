@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/golang/glog"
+	"github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
-	"github.com/iyacontrol/canary/pkg/apis/k8sdeployoperator/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -26,13 +28,19 @@ func (r *reconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
 
 	var cd v1.Canary
-	if err := r.Get(ctx, req.NamespacedName, &cd); err != nil {
+	err := r.Get(ctx, req.NamespacedName, &cd)
+	if errors.IsNotFound(err) {
+		glog.Error("Could not find canary")
+		return reconcile.Result{}, nil
+	}
+
+	if err != nil {
 		glog.Errorf("unable to get canary: %v", err)
 		return ctrl.Result{}, err
 	}
 
 	var deploy appsv1.Deployment
-	err := r.Get(ctx, req.NamespacedName, &deploy)
+	err = r.Get(ctx, req.NamespacedName, &deploy)
 	if err != nil {
 		return  ctrl.Result{}, err
 	}

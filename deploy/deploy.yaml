@@ -22,7 +22,7 @@ spec:
       serviceAccountName: deploy-operator
       containers:
       - name: k8s-deploy-operator
-        image: 'iyacontrol/deploy-operator:v0.1.1'
+        image: 'iyacontrol/deploy-operator:v0.1.5'
         env:
         - name: 'CPUS'
           value: '1'
