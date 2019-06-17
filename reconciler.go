@@ -58,8 +58,12 @@ func (r *reconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		Spec: deploy.Spec,
 	}
 
-	for index, image := range cd.Spec.Images {
-		canary.Spec.Template.Spec.Containers[index].Image = image
+	for containerName, image := range cd.Spec.Images {
+		for i, c := range deploy.Spec.Template.Spec.Containers {
+			if c.Name == containerName {
+				deploy.Spec.Template.Spec.Containers[i].Image = image
+			}
+		}
 	}
 
 	canary.Spec.Replicas = &replicas
@@ -91,8 +95,12 @@ func (r *reconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			return  ctrl.Result{}, err
 		}
 
-		for index, image := range cd.Spec.Images {
-			deploy.Spec.Template.Spec.Containers[index].Image = image
+		for containerName, image := range cd.Spec.Images {
+			for i, c := range deploy.Spec.Template.Spec.Containers {
+				if c.Name == containerName {
+					deploy.Spec.Template.Spec.Containers[i].Image = image
+				}
+			}
 		}
 
 		err = r.Update(ctx, &deploy)

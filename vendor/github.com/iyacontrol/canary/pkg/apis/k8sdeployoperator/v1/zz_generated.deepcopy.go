@@ -90,8 +90,10 @@ func (in *CanarySpec) DeepCopyInto(out *CanarySpec) {
 	*out = *in
 	if in.Images != nil {
 		in, out := &in.Images, &out.Images
-		*out = make([]string, len(*in))
-		copy(*out, *in)
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	return
 }

@@ -3,8 +3,14 @@ kind: Canary
 metadata:
   name: hello
   namespace: sgt
+  ownerReferences:
+  - kind: Deployment
+    apiVersion: apps/v1
+    name: hello
+    uid: 6b93d32e-8c45-11e9-ad85-fa163e02fddb
+    controller: true
 spec:
-  images: 
-    - iyacontrol/hello:canary
-  stage: 3
+  images:
+    hello: "iyacontrol/hello:canary"
+  stage: 1
   
